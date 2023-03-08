@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 import sha1 from 'sha1';
 import { Request } from 'express';
-import mongoDBCore from 'mongodb/lib/core';
+import {ObjectId} from 'mongodb';
 import dbClient from './db';
 import redisClient from './redis';
 
@@ -12,7 +12,7 @@ import redisClient from './redis';
  * @returns {Promise<{_id: ObjectId, email: string, password: string}>}
  */
 export const getUserFromAuthorization = async (req) => {
-  const authorization = req.headers.authorization || null;
+  const authorization = req.headers.authorization;
 
   if (!authorization) {
     return null;
@@ -50,8 +50,8 @@ export const getUserFromXToken = async (req) => {
     return null;
   }
   const user = await (await dbClient.usersCollection())
-    .findOne({ _id: new mongoDBCore.BSON.ObjectId(userId) });
-  return user || null;
+    .findOne({ _id: ObjectId(userId) });
+  return user;
 };
 
 export default {
